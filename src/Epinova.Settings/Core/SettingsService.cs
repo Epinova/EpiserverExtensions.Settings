@@ -28,6 +28,7 @@ namespace Epinova.Settings.Core
     using EPiServer.DataAbstraction;
     using EPiServer.Framework.TypeScanner;
     using EPiServer.Logging;
+    using EPiServer.Web;
     using EPiServer.Web.Routing;
     using System;
     using System.Collections.Generic;
@@ -244,7 +245,7 @@ namespace Epinova.Settings.Core
                 contentRootService.Register<ContentFolder>(
                     rootName: GlobalSettingsRootName,
                     contentRootId: GlobalSettingsRootGuid,
-                    parent: ContentReference.RootPage);
+                    parent: SiteDefinition.Current.GlobalAssetsRoot);
                 GlobalSettingsRoot = contentRootService.Get(rootName: GlobalSettingsRootName);
             }
             catch(NotSupportedException notSupportedException)
@@ -258,7 +259,7 @@ namespace Epinova.Settings.Core
                 contentRootService.Register<ContentFolder>(
                     rootName: SettingsRootName,
                     contentRootId: SettingsRootGuid,
-                    parent: ContentReference.RootPage);
+                    parent: SiteDefinition.Current.SiteAssetsRoot);
                 SettingsRoot = contentRootService.Get(rootName: SettingsRootName);
             }
             catch(NotSupportedException notSupportedException)
