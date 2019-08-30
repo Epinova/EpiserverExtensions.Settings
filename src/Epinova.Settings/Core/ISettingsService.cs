@@ -21,12 +21,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.Core
+namespace Epinova.Settings.Core
 {
+    using EPiServer.Core;
     using System;
     using System.Collections.Generic;
-
-    using EPiServer.Core;
 
     /// <summary>
     /// Interface ISettingsService

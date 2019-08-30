@@ -21,17 +21,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.Core
+namespace Epinova.Settings.Core
 {
-    using System;
-
     using EPiServer;
     using EPiServer.Core;
     using EPiServer.Framework;
     using EPiServer.Framework.Initialization;
     using EPiServer.Framework.Localization;
     using EPiServer.ServiceLocation;
-
+    using System;
     using InitializationModule = EPiServer.Web.InitializationModule;
 
     /// <summary>
@@ -55,7 +53,7 @@ namespace Epi.Extensions.Settings.Core
         /// <param name="context">The context on which the container can be accessed.</param>
         public void ConfigureContainer(ServiceConfigurationContext context)
         {
-            if (context == null)
+            if(context == null)
             {
                 return;
             }
@@ -75,12 +73,12 @@ namespace Epi.Extensions.Settings.Core
         /// <exception cref="T:EPiServer.ServiceLocation.ActivationException">if there is are errors resolving the service instance.</exception>
         public void Initialize(InitializationEngine context)
         {
-            if ((context == null) || (context.HostType != HostType.WebApplication))
+            if((context == null) || (context.HostType != HostType.WebApplication))
             {
                 return;
             }
 
-            if (initialized)
+            if(initialized)
             {
                 return;
             }
@@ -112,12 +110,12 @@ namespace Epi.Extensions.Settings.Core
         /// </para></remarks>
         public void Uninitialize(InitializationEngine context)
         {
-            if (context == null)
+            if(context == null)
             {
                 return;
             }
 
-            if (!initialized)
+            if(!initialized)
             {
                 return;
             }
@@ -136,12 +134,12 @@ namespace Epi.Extensions.Settings.Core
         /// <param name="e">The <see cref="DeleteContentEventArgs"/> instance containing the event data.</param>
         private static void DeletingContent(object sender, DeleteContentEventArgs e)
         {
-            if (e == null)
+            if(e == null)
             {
                 return;
             }
 
-            if (!(e.Content is SettingsBase) || e.Content.ParentLink != settingsService.GlobalSettingsRoot)
+            if(!(e.Content is SettingsBase) || e.Content.ParentLink != settingsService.GlobalSettingsRoot)
             {
                 return;
             }
@@ -156,10 +154,7 @@ namespace Epi.Extensions.Settings.Core
         /// <param name="sender"> The sender. </param>
         /// <param name="e"> The <see cref="EventArgs"/> instance containing the event data. </param>
         /// <exception cref="T:System.NotSupportedException">If the rootname is already registered with another contentRootId.</exception>
-        private static void InitCompleteHandler(object sender, EventArgs e)
-        {
-            settingsService.InitSettings();
-        }
+        private static void InitCompleteHandler(object sender, EventArgs e) => settingsService.InitSettings();
 
         /// <summary>
         /// Executed when the content is being moved.
@@ -168,12 +163,12 @@ namespace Epi.Extensions.Settings.Core
         /// <param name="e">The <see cref="ContentEventArgs"/> instance containing the event data.</param>
         private static void MovingContent(object sender, ContentEventArgs e)
         {
-            if (e == null)
+            if(e == null)
             {
                 return;
             }
 
-            if (!(e.Content is SettingsBase) || e.Content.ParentLink != settingsService.GlobalSettingsRoot
+            if(!(e.Content is SettingsBase) || e.Content.ParentLink != settingsService.GlobalSettingsRoot
                                              || e.TargetLink.ID != 2)
             {
                 return;
@@ -190,12 +185,12 @@ namespace Epi.Extensions.Settings.Core
         /// <param name="e">The <see cref="ContentEventArgs"/> instance containing the event data.</param>
         private static void PublishedContent(object sender, ContentEventArgs e)
         {
-            if (e == null)
+            if(e == null)
             {
                 return;
             }
 
-            if (e.Content is SettingsBase && e.Content.ParentLink == settingsService.GlobalSettingsRoot)
+            if(e.Content is SettingsBase && e.Content.ParentLink == settingsService.GlobalSettingsRoot)
             {
                 settingsService.UpdateSettings(content: e.Content);
             }

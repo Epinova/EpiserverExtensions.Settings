@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SettingsBaseUIDescriptor.cs" company="none">
+// <copyright file="SettingsComponent.cs" company="none">
 //      Copyright © 2019 Linus Ekström, Jeroen Stemerdink.
 //      Permission is hereby granted, free of charge, to any person obtaining a copy
 //      of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,34 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.UI
 {
-    using Epi.Extensions.Settings.Core;
-
-    using EPiServer.Core;
     using EPiServer.Shell;
+    using EPiServer.Shell.ViewComposition;
 
     /// <summary>
-    /// Class SettingsBaseUIDescriptor.
-    /// Implements the <see cref="EPiServer.Shell.UIDescriptor{SettingsBase}" />
+    /// Component that provides a tree based navigation for CMS pages.
+    /// Implements the <see cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
     /// </summary>
-    /// <seealso cref="EPiServer.Shell.UIDescriptor{SettingsBase}" />
-    [UIDescriptorRegistration]
-    public class SettingsBaseUIDescriptor : UIDescriptor<SettingsBase>
+    /// <seealso cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
+    [Component]
+    public sealed class SettingsComponent : ComponentDefinitionBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SettingsBaseUIDescriptor" /> class.
+        /// Initializes a new instance of the <see cref="SettingsComponent"/> class.
         /// </summary>
-        public SettingsBaseUIDescriptor()
-            : base("dijitIcon")
+        public SettingsComponent()
+            : base("epi-cms/component/SharedBlocks")
         {
-            this.IsPrimaryType = true;
-            this.ContainerTypes = new[] { typeof(ContentFolder) };
-            this.CommandIconClass = "epi-iconSettings";
-            this.IconClass = "epi-iconSettings";
-            this.LanguageKey = "settingsbase";
+            LanguagePath = "/episerver/cms/components/settings";
+            Title = "Settings";
+            SortOrder = 200;
+            Categories = new string[]
+                                  {
+                                      "cms"
+                                  };
+            PlugInAreas = new[] { PlugInArea.AssetsDefaultGroup };
+            Settings.Add(new Setting("repositoryKey", value: SettingsRepositoryDescriptor.RepositoryKey));
         }
     }
 }

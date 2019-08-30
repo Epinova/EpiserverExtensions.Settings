@@ -21,12 +21,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.UI
 {
-    using System.Collections.Generic;
-
-    using Epi.Extensions.Settings.Core;
-
+    using Epinova.Settings.Core;
     using EPiServer.Core;
     using EPiServer.Framework.Localization;
     using EPiServer.Shell;
@@ -34,6 +31,7 @@ namespace Epi.Extensions.Settings.UI
     using EPiServer.Shell.ViewComposition.Containers;
     using EPiServer.Shell.Web;
     using EPiServer.Web.Routing;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Class SettingsView.
@@ -96,7 +94,7 @@ namespace Epi.Extensions.Settings.UI
         {
             get
             {
-                ContentReference defaultContext = this.settingsService.GlobalSettingsRoot;
+                ContentReference defaultContext = settingsService.GlobalSettingsRoot;
                 return defaultContext.GetUri(false).ToString();
             }
         }
@@ -105,25 +103,13 @@ namespace Epi.Extensions.Settings.UI
         /// Gets the type of the menu.
         /// </summary>
         /// <value>The type of the menu.</value>
-        public GlobalNavigationMenuType MenuType
-        {
-            get
-            {
-                return GlobalNavigationMenuType.Static;
-            }
-        }
+        public GlobalNavigationMenuType MenuType => GlobalNavigationMenuType.Static;
 
         /// <summary>
         /// Gets the name of the view. Used or finding views.
         /// </summary>
         /// <value>The name.</value>
-        public string Name
-        {
-            get
-            {
-                return ViewName;
-            }
-        }
+        public string Name => ViewName;
 
         /// <summary>
         /// Gets the root <see cref="IContainer" /> that contains the different panels for the view.
@@ -133,9 +119,9 @@ namespace Epi.Extensions.Settings.UI
         {
             get
             {
-                if (this.rootContainer != null)
+                if(rootContainer != null)
                 {
-                    return this.rootContainer;
+                    return rootContainer;
                 }
 
                 IContainer navigation = new PinnablePane().Add(
@@ -149,7 +135,7 @@ namespace Epi.Extensions.Settings.UI
                         new ContentPane { PlugInArea = "/episerver/cms/maincontent" },
                         new BorderSettingsDictionary(region: BorderContainerRegion.Center));
 
-                this.rootContainer = new BorderContainer().Add(
+                rootContainer = new BorderContainer().Add(
                     component: navigation,
                     new BorderSettingsDictionary(
                         region: BorderContainerRegion.Leading,
@@ -160,8 +146,8 @@ namespace Epi.Extensions.Settings.UI
                     component: content,
                     new BorderSettingsDictionary(region: BorderContainerRegion.Center));
 
-                this.rootContainer.Settings["id"] = this.Name + "_rootContainer";
-                return this.rootContainer;
+                rootContainer.Settings["id"] = Name + "_rootContainer";
+                return rootContainer;
             }
         }
 
@@ -171,28 +157,16 @@ namespace Epi.Extensions.Settings.UI
         /// <value>The Route segment.</value>
         public string RouteSegment
         {
-            get
-            {
-                return this.routeSegment ?? (this.routeSegment = "settings");
-            }
+            get => routeSegment ?? (routeSegment = "settings");
 
-            set
-            {
-                this.routeSegment = value;
-            }
+            set => routeSegment = value;
         }
 
         /// <summary>
         /// Gets a localized title for this view.
         /// </summary>
         /// <value>The title.</value>
-        public string Title
-        {
-            get
-            {
-                return "Settings";
-            }
-        }
+        public string Title => "Settings";
 
         /// <summary>
         /// Creates a new instance of the view.
@@ -201,17 +175,14 @@ namespace Epi.Extensions.Settings.UI
         public ICompositeView CreateView()
         {
             return new SettingsView(
-                localizationService: this.localizationService,
-                settingsService: this.settingsService);
+                localizationService: localizationService,
+                settingsService: settingsService);
         }
 
         /// <summary>
         /// Gets the component categories.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> of categories.</returns>
-        public IEnumerable<string> GetComponentCategories()
-        {
-            return new string[] { };
-        }
+        public IEnumerable<string> GetComponentCategories() => new string[] { };
     }
 }

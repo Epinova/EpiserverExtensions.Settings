@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GlobalSettingsComponent.cs" company="none">
+// <copyright file="SettingsBaseUIDescriptor.cs" company="none">
 //      Copyright © 2019 Linus Ekström, Jeroen Stemerdink.
 //      Permission is hereby granted, free of charge, to any person obtaining a copy
 //      of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,31 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.UI
 {
-    using EPiServer.Shell.ViewComposition;
+    using Epinova.Settings.Core;
+    using EPiServer.Core;
+    using EPiServer.Shell;
 
     /// <summary>
-    /// Component that provides a tree based navigation for global settings.
-    /// Implements the <see cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
+    /// Class SettingsBaseUIDescriptor.
+    /// Implements the <see cref="EPiServer.Shell.UIDescriptor{SettingsBase}" />
     /// </summary>
-    /// <seealso cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
-    [Component]
-    public sealed class GlobalSettingsComponent : ComponentDefinitionBase
+    /// <seealso cref="EPiServer.Shell.UIDescriptor{SettingsBase}" />
+    [UIDescriptorRegistration]
+    public class SettingsBaseUIDescriptor : UIDescriptor<SettingsBase>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GlobalSettingsComponent"/> class.
+        /// Initializes a new instance of the <see cref="SettingsBaseUIDescriptor" /> class.
         /// </summary>
-        public GlobalSettingsComponent()
-            : base("epi-cms/component/MainNavigationComponent")
+        public SettingsBaseUIDescriptor()
+            : base("dijitIcon")
         {
-            this.LanguagePath = "/episerver/cms/components/globalsettings";
-            this.Title = "Global settings";
-            this.SortOrder = 100;
-            this.Settings.Add(new Setting("repositoryKey", value: GlobalSettingsRepositoryDescriptor.RepositoryKey));
+            IsPrimaryType = true;
+            ContainerTypes = new[] { typeof(ContentFolder) };
+            CommandIconClass = "epi-iconSettings";
+            IconClass = "epi-iconSettings";
+            LanguageKey = "settingsbase";
         }
     }
 }

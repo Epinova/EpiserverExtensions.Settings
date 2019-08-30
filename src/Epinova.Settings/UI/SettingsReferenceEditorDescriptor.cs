@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LocalizableSettingsBase.cs" company="none">
+// <copyright file="SettingsReferenceEditorDescriptor.cs" company="none">
 //      Copyright © 2019 Linus Ekström, Jeroen Stemerdink.
 //      Permission is hereby granted, free of charge, to any person obtaining a copy
 //      of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,24 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.Core
+namespace Epinova.Settings.UI
 {
-    using System.Collections.Generic;
-    using System.Globalization;
-
+    using Epinova.Settings.Core;
     using EPiServer.Core;
+    using EPiServer.Shell.ObjectEditing.EditorDescriptors;
 
     /// <summary>
-    /// Class LocalizableSettingsBase.
-    /// Implements the <see cref="SettingsBase" />
-    /// Implements the <see cref="EPiServer.Core.ILocalizable" />
+    /// Editor descriptor that will create a block selector.
+    /// Implements the <see cref="EPiServer.Shell.ObjectEditing.EditorDescriptors.ContentReferenceEditorDescriptor{SettingsBase}" />
     /// </summary>
-    /// <seealso cref="SettingsBase" />
-    /// <seealso cref="EPiServer.Core.ILocalizable" />
-    public class LocalizableSettingsBase : SettingsBase, ILocalizable
+    /// <seealso cref="EPiServer.Shell.ObjectEditing.EditorDescriptors.ContentReferenceEditorDescriptor{SettingsBase}" />
+    [EditorDescriptorRegistration(TargetType = typeof(ContentReference), UIHint = "dynamicsettings")]
+    public class SettingsReferenceEditorDescriptor : ContentReferenceEditorDescriptor<SettingsBase>
     {
         /// <summary>
-        /// Gets or sets the existing languages for the <see cref="T:EPiServer.Core.ContentData" />
+        /// Gets the repository key.
         /// </summary>
-        /// <value>The existing languages.</value>
-        public IEnumerable<CultureInfo> ExistingLanguages { get; set; }
-
-        /// <summary>
-        /// Gets or sets the language for this instance (typically a <see cref="T:EPiServer.Core.ContentData" /> instance).
-        /// </summary>
-        /// <value>The language.</value>
-        public CultureInfo Language { get; set; }
-
-        /// <summary>
-        /// Gets or sets the master language for this <see cref="T:EPiServer.Core.ContentData" /> instance.
-        /// </summary>
-        /// <value>The master language.</value>
-        public CultureInfo MasterLanguage { get; set; }
+        /// <value>The repository key.</value>
+        public override string RepositoryKey => SettingsRepositoryDescriptor.RepositoryKey;
     }
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SettingsReferenceEditorDescriptor.cs" company="none">
+// <copyright file="SettingsBase.cs" company="none">
 //      Copyright © 2019 Linus Ekström, Jeroen Stemerdink.
 //      Permission is hereby granted, free of charge, to any person obtaining a copy
 //      of this software and associated documentation files (the "Software"), to deal
@@ -21,31 +21,42 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.Core
 {
-    using Epi.Extensions.Settings.Core;
-
     using EPiServer.Core;
-    using EPiServer.Shell.ObjectEditing.EditorDescriptors;
+    using System;
 
     /// <summary>
-    /// Editor descriptor that will create a block selector.
-    /// Implements the <see cref="EPiServer.Shell.ObjectEditing.EditorDescriptors.ContentReferenceEditorDescriptor{SettingsBase}" />
+    /// Class SettingsBase.
+    /// Implements the <see cref="EPiServer.Core.BasicContent" />
+    /// Implements the <see cref="EPiServer.Core.IVersionable" />
     /// </summary>
-    /// <seealso cref="EPiServer.Shell.ObjectEditing.EditorDescriptors.ContentReferenceEditorDescriptor{SettingsBase}" />
-    [EditorDescriptorRegistration(TargetType = typeof(ContentReference), UIHint = "dynamicsettings")]
-    public class SettingsReferenceEditorDescriptor : ContentReferenceEditorDescriptor<SettingsBase>
+    /// <seealso cref="EPiServer.Core.BasicContent" />
+    /// <seealso cref="EPiServer.Core.IVersionable" />
+    public class SettingsBase : BasicContent, IVersionable
     {
         /// <summary>
-        /// Gets the repository key.
+        /// Gets or sets a value indicating whether this item is in pending publish state.
         /// </summary>
-        /// <value>The repository key.</value>
-        public override string RepositoryKey
-        {
-            get
-            {
-                return SettingsRepositoryDescriptor.RepositoryKey;
-            }
-        }
+        /// <value><c>true</c> if this instance is in pending publish state; otherwise, <c>false</c>.</value>
+        public bool IsPendingPublish { get; set; }
+
+        /// <summary>
+        /// Gets or sets the start publish date for this item.
+        /// </summary>
+        /// <value>The start publish.</value>
+        public DateTime? StartPublish { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version status of this item.
+        /// </summary>
+        /// <value>The status.</value>
+        public VersionStatus Status { get; set; }
+
+        /// <summary>
+        /// Gets or sets the stop publish date for this item.
+        /// </summary>
+        /// <value>The stop publish.</value>
+        public DateTime? StopPublish { get; set; }
     }
 }

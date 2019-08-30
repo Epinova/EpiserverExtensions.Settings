@@ -21,19 +21,18 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.Core
+namespace Epinova.Settings.Core
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-
     using EPiServer;
     using EPiServer.Core;
     using EPiServer.DataAbstraction;
     using EPiServer.Framework.TypeScanner;
     using EPiServer.Logging;
     using EPiServer.Web.Routing;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
 
     /// <summary>
     /// Class SettingsService.
@@ -111,7 +110,7 @@ namespace Epi.Extensions.Settings.Core
             this.contentTypeRepository = contentTypeRepository;
             this.ancestorReferencesLoader = ancestorReferencesLoader;
 
-            this.GlobalSettings = new Dictionary<Type, object>();
+            GlobalSettings = new Dictionary<Type, object>();
         }
 
         /// <summary>
@@ -145,12 +144,12 @@ namespace Epi.Extensions.Settings.Core
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            if (this.disposed)
+            if(disposed)
             {
                 return;
             }
 
-            this.Dispose(true);
+            Dispose(true);
         }
 
         /// <summary>
@@ -163,26 +162,26 @@ namespace Epi.Extensions.Settings.Core
         /// <exception cref="T:System.Threading.SynchronizationLockException">The current thread has not entered the lock in read mode.</exception>
         public T GetSettings<T>()
         {
-            this.readerWriterLock.EnterReadLock();
+            readerWriterLock.EnterReadLock();
 
             try
             {
-                if (this.GlobalSettings.ContainsKey(typeof(T)))
+                if(GlobalSettings.ContainsKey(typeof(T)))
                 {
-                    return (T)this.GlobalSettings[typeof(T)];
+                    return (T)GlobalSettings[typeof(T)];
                 }
             }
-            catch (KeyNotFoundException keyNotFoundException)
+            catch(KeyNotFoundException keyNotFoundException)
             {
-                this.log.Error($"[Settings] {keyNotFoundException.Message}", exception: keyNotFoundException);
+                log.Error($"[Settings] {keyNotFoundException.Message}", exception: keyNotFoundException);
             }
-            catch (ArgumentNullException argumentNullException)
+            catch(ArgumentNullException argumentNullException)
             {
-                this.log.Error($"[Settings] {argumentNullException.Message}", exception: argumentNullException);
+                log.Error($"[Settings] {argumentNullException.Message}", exception: argumentNullException);
             }
             finally
             {
-                this.readerWriterLock.ExitReadLock();
+                readerWriterLock.ExitReadLock();
             }
 
             return default;
@@ -200,39 +199,38 @@ namespace Epi.Extensions.Settings.Core
         public T GetSettings<T>(IContent content)
             where T : IContent
         {
-            if (content == null)
+            if(content == null)
             {
                 return default;
             }
 
-            T settingsFromContent = this.TryGetSettingsFromContent<T>(content: content);
+            T settingsFromContent = TryGetSettingsFromContent<T>(content: content);
 
-            if (settingsFromContent != null)
+            if(settingsFromContent != null)
             {
                 return settingsFromContent;
             }
 
             IEnumerable<ContentReference> ancestors =
-                this.ancestorReferencesLoader.GetAncestors(contentLink: content.ContentLink);
+                ancestorReferencesLoader.GetAncestors(contentLink: content.ContentLink);
 
-            foreach (ContentReference parentReference in ancestors)
+            foreach(ContentReference parentReference in ancestors)
             {
-                IContent parentContent;
 
-                if (!this.contentRepository.TryGet(contentLink: parentReference, content: out parentContent))
+                if(!contentRepository.TryGet(contentLink: parentReference, content: out IContent parentContent))
                 {
                     continue;
                 }
 
-                settingsFromContent = this.TryGetSettingsFromContent<T>(content: parentContent);
+                settingsFromContent = TryGetSettingsFromContent<T>(content: parentContent);
 
-                if (settingsFromContent != null)
+                if(settingsFromContent != null)
                 {
                     return settingsFromContent;
                 }
             }
 
-            return this.GetSettings<T>();
+            return GetSettings<T>();
         }
 
         /// <summary>
@@ -243,33 +241,33 @@ namespace Epi.Extensions.Settings.Core
         {
             try
             {
-                this.contentRootService.Register<ContentFolder>(
+                contentRootService.Register<ContentFolder>(
                     rootName: GlobalSettingsRootName,
-                    contentRootId: this.GlobalSettingsRootGuid,
+                    contentRootId: GlobalSettingsRootGuid,
                     parent: ContentReference.RootPage);
-                this.GlobalSettingsRoot = this.contentRootService.Get(rootName: GlobalSettingsRootName);
+                GlobalSettingsRoot = contentRootService.Get(rootName: GlobalSettingsRootName);
             }
-            catch (NotSupportedException notSupportedException)
+            catch(NotSupportedException notSupportedException)
             {
-                this.log.Error($"[Settings] {notSupportedException.Message}", exception: notSupportedException);
+                log.Error($"[Settings] {notSupportedException.Message}", exception: notSupportedException);
                 throw;
             }
 
             try
             {
-                this.contentRootService.Register<ContentFolder>(
+                contentRootService.Register<ContentFolder>(
                     rootName: SettingsRootName,
-                    contentRootId: this.SettingsRootGuid,
+                    contentRootId: SettingsRootGuid,
                     parent: ContentReference.RootPage);
-                this.SettingsRoot = this.contentRootService.Get(rootName: SettingsRootName);
+                SettingsRoot = contentRootService.Get(rootName: SettingsRootName);
             }
-            catch (NotSupportedException notSupportedException)
+            catch(NotSupportedException notSupportedException)
             {
-                this.log.Error($"[Settings] {notSupportedException.Message}", exception: notSupportedException);
+                log.Error($"[Settings] {notSupportedException.Message}", exception: notSupportedException);
                 throw;
             }
 
-            this.InitializeContentInstances();
+            InitializeContentInstances();
         }
 
         /// <summary>
@@ -283,28 +281,28 @@ namespace Epi.Extensions.Settings.Core
         {
             Type contentType = content.GetOriginalType();
 
-            this.readerWriterLock.EnterWriteLock();
+            readerWriterLock.EnterWriteLock();
 
             try
             {
-                if (!this.GlobalSettings.ContainsKey(key: contentType))
+                if(!GlobalSettings.ContainsKey(key: contentType))
                 {
                     return;
                 }
 
-                this.GlobalSettings[key: contentType] = content;
+                GlobalSettings[key: contentType] = content;
             }
-            catch (KeyNotFoundException keyNotFoundException)
+            catch(KeyNotFoundException keyNotFoundException)
             {
-                this.log.Error($"[Settings] {keyNotFoundException.Message}", exception: keyNotFoundException);
+                log.Error($"[Settings] {keyNotFoundException.Message}", exception: keyNotFoundException);
             }
-            catch (ArgumentNullException argumentNullException)
+            catch(ArgumentNullException argumentNullException)
             {
-                this.log.Error($"[Settings] {argumentNullException.Message}", exception: argumentNullException);
+                log.Error($"[Settings] {argumentNullException.Message}", exception: argumentNullException);
             }
             finally
             {
-                this.readerWriterLock.ExitWriteLock();
+                readerWriterLock.ExitWriteLock();
             }
         }
 
@@ -313,19 +311,19 @@ namespace Epi.Extensions.Settings.Core
         /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         private void Dispose(bool disposing)
         {
-            if (this.disposed)
+            if(disposed)
             {
                 return;
             }
 
-            if (this.readerWriterLock != null)
+            if(readerWriterLock != null)
             {
-                this.readerWriterLock.Dispose();
+                readerWriterLock.Dispose();
             }
 
-            this.disposed = true;
+            disposed = true;
 
-            if (disposing)
+            if(disposing)
             {
                 GC.SuppressFinalize(this);
             }
@@ -338,19 +336,19 @@ namespace Epi.Extensions.Settings.Core
         {
             Type type = typeof(SettingsContentTypeAttribute);
 
-            IEnumerable<Type> settingsModelTypes = this.typeScannerLookup.AllTypes.Where(
+            IEnumerable<Type> settingsModelTypes = typeScannerLookup.AllTypes.Where(
                 t => t.GetCustomAttributes(typeof(SettingsContentTypeAttribute), false).Length > 0);
 
-            List<IContent> existingItems = this.contentRepository
-                .GetChildren<IContent>(contentLink: this.GlobalSettingsRoot).ToList();
+            List<IContent> existingItems = contentRepository
+                .GetChildren<IContent>(contentLink: GlobalSettingsRoot).ToList();
 
-            foreach (Type settingsType in settingsModelTypes)
+            foreach(Type settingsType in settingsModelTypes)
             {
                 SettingsContentTypeAttribute attribute =
                     settingsType.GetCustomAttributes(attributeType: type, false).FirstOrDefault() as
                         SettingsContentTypeAttribute;
 
-                if (attribute == null)
+                if(attribute == null)
                 {
                     continue;
                 }
@@ -358,18 +356,18 @@ namespace Epi.Extensions.Settings.Core
                 IContent existingItem = existingItems.FirstOrDefault(
                     i => i.ContentGuid == new Guid(g: attribute.SettingsInstanceGuid));
 
-                if (existingItem == null)
+                if(existingItem == null)
                 {
-                    ContentType contentType = this.contentTypeRepository.Load(modelType: settingsType);
+                    ContentType contentType = contentTypeRepository.Load(modelType: settingsType);
 
-                    IContent newSettings = this.contentRepository.GetDefault<IContent>(
-                        parentLink: this.GlobalSettingsRoot,
+                    IContent newSettings = contentRepository.GetDefault<IContent>(
+                        parentLink: GlobalSettingsRoot,
                         contentTypeID: contentType.ID);
 
                     newSettings.Name = attribute.SettingsName;
                     newSettings.ContentGuid = new Guid(g: attribute.SettingsInstanceGuid);
 
-                    this.contentRepository.Save(
+                    contentRepository.Save(
                         content: newSettings,
                         action: EPiServer.DataAccess.SaveAction.Publish,
                         access: EPiServer.Security.AccessLevel.NoAccess);
@@ -377,7 +375,7 @@ namespace Epi.Extensions.Settings.Core
                     existingItem = newSettings;
                 }
 
-                this.GlobalSettings.Add(existingItem.GetOriginalType(), value: existingItem);
+                GlobalSettings.Add(existingItem.GetOriginalType(), value: existingItem);
             }
         }
 
@@ -392,21 +390,20 @@ namespace Epi.Extensions.Settings.Core
         {
             PropertyData property = content.Property[name: typeof(T).Name];
 
-            if (property == null || property.IsNull)
+            if(property == null || property.IsNull)
             {
                 return default;
             }
 
             ContentReference reference = property.Value as ContentReference;
 
-            if (reference == null)
+            if(reference == null)
             {
                 return default;
             }
 
-            T settingsObject;
 
-            this.contentRepository.TryGet(contentLink: reference, content: out settingsObject);
+            contentRepository.TryGet(contentLink: reference, content: out T settingsObject);
 
             return settingsObject != null ? settingsObject : default;
         }

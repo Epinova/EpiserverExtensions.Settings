@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SettingsMenuProvider.cs" company="none">
+// <copyright file="LocalizableSettingsBase.cs" company="none">
 //      Copyright © 2019 Linus Ekström, Jeroen Stemerdink.
 //      Permission is hereby granted, free of charge, to any person obtaining a copy
 //      of this software and associated documentation files (the "Software"), to deal
@@ -21,36 +21,37 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.Core
 {
+    using EPiServer.Core;
     using System.Collections.Generic;
-
-    using EPiServer.Security;
-    using EPiServer.Shell.Navigation;
+    using System.Globalization;
 
     /// <summary>
-    ///     Provides menu items for the settings component.
+    /// Class LocalizableSettingsBase.
+    /// Implements the <see cref="SettingsBase" />
+    /// Implements the <see cref="EPiServer.Core.ILocalizable" />
     /// </summary>
-    [MenuProvider]
-    public class SettingsMenuProvider : IMenuProvider
+    /// <seealso cref="SettingsBase" />
+    /// <seealso cref="EPiServer.Core.ILocalizable" />
+    public class LocalizableSettingsBase : SettingsBase, ILocalizable
     {
         /// <summary>
-        ///     Provides the CMS menu section and the CMS settings section.
+        /// Gets or sets the existing languages for the <see cref="T:EPiServer.Core.ContentData" />
         /// </summary>
-        /// <returns>
-        ///     A list of <see cref="MenuItem" />s that the provider exposes.
-        /// </returns>
-        public IEnumerable<MenuItem> GetMenuItems()
-        {
-            UrlMenuItem cmsGlobalSettings = new UrlMenuItem(
-                                                "Global settings",
-                                                "/global/cms/settings",
-                                                "/episerver/Epi.Extensions.Settings/settings")
-                                                {
-                                                    IsAvailable = request => PrincipalInfo.HasAdminAccess
-                                                };
+        /// <value>The existing languages.</value>
+        public IEnumerable<CultureInfo> ExistingLanguages { get; set; }
 
-            return new MenuItem[] { cmsGlobalSettings };
-        }
+        /// <summary>
+        /// Gets or sets the language for this instance (typically a <see cref="T:EPiServer.Core.ContentData" /> instance).
+        /// </summary>
+        /// <value>The language.</value>
+        public CultureInfo Language { get; set; }
+
+        /// <summary>
+        /// Gets or sets the master language for this <see cref="T:EPiServer.Core.ContentData" /> instance.
+        /// </summary>
+        /// <value>The master language.</value>
+        public CultureInfo MasterLanguage { get; set; }
     }
 }

@@ -21,14 +21,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.UI
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using Epi.Extensions.Settings.Core;
-
+    using Epinova.Settings.Core;
     using EPiServer;
     using EPiServer.Cms.Shell.Search;
     using EPiServer.Core;
@@ -40,6 +35,9 @@ namespace Epi.Extensions.Settings.UI
     using EPiServer.Shell.Search;
     using EPiServer.Web;
     using EPiServer.Web.Routing;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Class SettingsSearchProvider.
@@ -107,7 +105,7 @@ namespace Epi.Extensions.Settings.UI
         /// Gets the category.
         /// </summary>
         /// <value>The category.</value>
-        public override string Category => this.localizationService.GetString("/episerver/cms/components/settings/title");
+        public override string Category => localizationService.GetString("/episerver/cms/components/settings/title");
 
         /// <summary>
         /// Gets the icon CSS class.
@@ -122,7 +120,7 @@ namespace Epi.Extensions.Settings.UI
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="SearchResult"/>.</returns>
         public override IEnumerable<SearchResult> Search(Query query)
         {
-            if (string.IsNullOrWhiteSpace(value: query?.SearchQuery) || query.SearchQuery.Trim().Length < 2)
+            if(String.IsNullOrWhiteSpace(value: query?.SearchQuery) || query.SearchQuery.Trim().Length < 2)
             {
                 return Enumerable.Empty<SearchResult>();
             }
@@ -131,25 +129,24 @@ namespace Epi.Extensions.Settings.UI
             string str = query.SearchQuery.Trim();
 
             IEnumerable<ContentReference> settings =
-                this.contentLoader.GetDescendents(contentLink: this.settingsService.SettingsRoot);
+                contentLoader.GetDescendents(contentLink: settingsService.SettingsRoot);
 
-            foreach (ContentReference contentReference in settings)
+            foreach(ContentReference contentReference in settings)
             {
-                SettingsBase setting;
 
-                if (!this.contentLoader.TryGet(contentLink: contentReference, content: out setting))
+                if(!contentLoader.TryGet(contentLink: contentReference, content: out SettingsBase setting))
                 {
                     continue;
                 }
 
-                if (setting.Name.IndexOf(value: str, comparisonType: StringComparison.OrdinalIgnoreCase) < 0)
+                if(setting.Name.IndexOf(value: str, comparisonType: StringComparison.OrdinalIgnoreCase) < 0)
                 {
                     continue;
                 }
 
-                searchResultList.Add(this.CreateSearchResult(contentData: setting));
+                searchResultList.Add(CreateSearchResult(contentData: setting));
 
-                if (searchResultList.Count == query.MaxResults)
+                if(searchResultList.Count == query.MaxResults)
                 {
                     break;
                 }
@@ -166,8 +163,8 @@ namespace Epi.Extensions.Settings.UI
         protected override string CreatePreviewText(IContentData content)
         {
             return content == null
-                       ? string.Empty
-                       : $"{((SettingsBase)content).Name} {this.localizationService.GetString("/contentrepositories/settings/customselecttitle").ToLower()}";
+                       ? String.Empty
+                       : $"{((SettingsBase)content).Name} {localizationService.GetString("/contentrepositories/settings/customselecttitle").ToLower()}";
         }
     }
 }

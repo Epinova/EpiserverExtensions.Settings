@@ -21,18 +21,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.UI
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using Epi.Extensions.Settings.Core;
-
+    using Epinova.Settings.Core;
     using EPiServer.Core;
     using EPiServer.Framework.Localization;
     using EPiServer.ServiceLocation;
     using EPiServer.Shell;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Class GlobalSettingsRepositoryDescriptor.
@@ -46,160 +44,82 @@ namespace Epi.Extensions.Settings.UI
         /// Gets the repository key.
         /// </summary>
         /// <value>The repository key.</value>
-        public static string RepositoryKey
-        {
-            get
-            {
-                return "globalsettings";
-            }
-        }
+        public static string RepositoryKey => "globalsettings";
 
         /// <summary>
         /// Gets the contained types.
         /// </summary>
         /// <value>The contained types.</value>
-        public override IEnumerable<Type> ContainedTypes
-        {
-            get
-            {
-                return new[] { typeof(SettingsBase) };
-            }
-        }
+        public override IEnumerable<Type> ContainedTypes => new[] { typeof(SettingsBase) };
 
         /// <summary>
         /// Gets the creatable types.
         /// </summary>
         /// <value>The creatable types.</value>
         /// <remarks>Disable creating items by editors.</remarks>
-        public override IEnumerable<Type> CreatableTypes
-        {
-            get
-            {
-                return new Type[0];
-            }
-        }
+        public override IEnumerable<Type> CreatableTypes => new Type[0];
 
         /// <summary>
         /// Gets the custom navigation widget.
         /// </summary>
         /// <value>The custom navigation widget.</value>
-        public override string CustomNavigationWidget
-        {
-            get
-            {
-                return "epi-cms/component/ContentNavigationTree";
-            }
-        }
+        public override string CustomNavigationWidget => "epi-cms/component/ContentNavigationTree";
 
         /// <summary>
         /// Gets the custom select title.
         /// </summary>
         /// <value>The custom select title.</value>
-        public override string CustomSelectTitle
-        {
-            get
-            {
-                return LocalizationService.Current.GetString("/contentrepositories/globalsettings/customselecttitle");
-            }
-        }
+        public override string CustomSelectTitle => LocalizationService.Current.GetString("/contentrepositories/globalsettings/customselecttitle");
 
         /// <summary>
         /// Gets the key.
         /// </summary>
         /// <value>The key.</value>
-        public override string Key
-        {
-            get
-            {
-                return RepositoryKey;
-            }
-        }
+        public override string Key => RepositoryKey;
 
         /// <summary>
         /// Gets the main views.
         /// </summary>
         /// <value>The main views.</value>
-        public override IEnumerable<string> MainViews
-        {
-            get
-            {
-                return new string[1] { SettingsView.ViewName };
-            }
-        }
+        public override IEnumerable<string> MainViews => new string[1] { SettingsView.ViewName };
 
         /// <summary>
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
-        public override string Name
-        {
-            get
-            {
-                return LocalizationService.Current.GetString("/contentrepositories/globalsettings/name");
-            }
-        }
+        public override string Name => LocalizationService.Current.GetString("/contentrepositories/globalsettings/name");
 
         /// <summary>
         /// Gets the prevent copying for.
         /// </summary>
         /// <value>The prevent copying for.</value>
-        public override IEnumerable<string> PreventCopyingFor
-        {
-            get
-            {
-                return this.Settings.Service.GlobalSettings.Select(
+        public override IEnumerable<string> PreventCopyingFor => Settings.Service.GlobalSettings.Select(
                     gs => ((BasicContent)gs.Value).ContentLink.ToString());
-            }
-        }
 
         /// <summary>
         /// Gets the prevent deletion for.
         /// </summary>
         /// <value>The prevent deletion for.</value>
-        public override IEnumerable<string> PreventDeletionFor
-        {
-            get
-            {
-                return this.Settings.Service.GlobalSettings.Select(
+        public override IEnumerable<string> PreventDeletionFor => Settings.Service.GlobalSettings.Select(
                     gs => ((BasicContent)gs.Value).ContentLink.ToString());
-            }
-        }
 
         /// <summary>
         /// Gets the roots.
         /// </summary>
         /// <value>The roots.</value>
-        public override IEnumerable<ContentReference> Roots
-        {
-            get
-            {
-                return new[] { this.Settings.Service.GlobalSettingsRoot };
-            }
-        }
+        public override IEnumerable<ContentReference> Roots => new[] { Settings.Service.GlobalSettingsRoot };
 
         /// <summary>
         /// Gets the search area.
         /// </summary>
         /// <value>The search area.</value>
-        public override string SearchArea
-        {
-            get
-            {
-                return GlobalSettingsSearchProvider.SearchArea;
-            }
-        }
+        public override string SearchArea => GlobalSettingsSearchProvider.SearchArea;
 
         /// <summary>
         /// Gets the sort order.
         /// </summary>
         /// <value>The sort order.</value>
-        public override int SortOrder
-        {
-            get
-            {
-                return 1000;
-            }
-        }
+        public override int SortOrder => 1000;
 
         private Injected<ISettingsService> Settings { get; set; }
     }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SettingsComponent.cs" company="none">
+// <copyright file="SettingsMenuProvider.cs" company="none">
 //      Copyright © 2019 Linus Ekström, Jeroen Stemerdink.
 //      Permission is hereby granted, free of charge, to any person obtaining a copy
 //      of this software and associated documentation files (the "Software"), to deal
@@ -21,36 +21,35 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.UI
+namespace Epinova.Settings.UI
 {
+    using EPiServer.Security;
+    using EPiServer.Shell.Navigation;
     using System.Collections.Generic;
 
-    using EPiServer.Shell;
-    using EPiServer.Shell.ViewComposition;
-
     /// <summary>
-    /// Component that provides a tree based navigation for CMS pages.
-    /// Implements the <see cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
+    ///     Provides menu items for the settings component.
     /// </summary>
-    /// <seealso cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
-    [Component]
-    public sealed class SettingsComponent : ComponentDefinitionBase
+    [MenuProvider]
+    public class SettingsMenuProvider : IMenuProvider
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SettingsComponent"/> class.
+        ///     Provides the CMS menu section and the CMS settings section.
         /// </summary>
-        public SettingsComponent()
-            : base("epi-cms/component/SharedBlocks")
+        /// <returns>
+        ///     A list of <see cref="MenuItem" />s that the provider exposes.
+        /// </returns>
+        public IEnumerable<MenuItem> GetMenuItems()
         {
-            this.LanguagePath = "/episerver/cms/components/settings";
-            this.Title = "Settings";
-            this.SortOrder = 200;
-            this.Categories = new string[]
-                                  {
-                                      "cms"
-                                  };
-            this.PlugInAreas = new[] { PlugInArea.AssetsDefaultGroup };
-            this.Settings.Add(new Setting("repositoryKey", value: SettingsRepositoryDescriptor.RepositoryKey));
+            UrlMenuItem cmsGlobalSettings = new UrlMenuItem(
+                                                "Global settings",
+                                                "/global/cms/settings",
+                                                "/episerver/Epinova.Settings/settings")
+            {
+                IsAvailable = request => PrincipalInfo.HasAdminAccess
+            };
+
+            return new MenuItem[] { cmsGlobalSettings };
         }
     }
 }

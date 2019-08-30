@@ -134,6 +134,7 @@ publish/
 *.azurePubxml
 
 # NuGet Packages Directory
+*.nupkg
 packages/*
 !packages/repositories.config
 

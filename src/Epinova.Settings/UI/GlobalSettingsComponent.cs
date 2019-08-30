@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SettingsContentTypeAttribute.cs" company="none">
+// <copyright file="GlobalSettingsComponent.cs" company="none">
 //      Copyright © 2019 Linus Ekström, Jeroen Stemerdink.
 //      Permission is hereby granted, free of charge, to any person obtaining a copy
 //      of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,28 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Epi.Extensions.Settings.Core
+namespace Epinova.Settings.UI
 {
-    using System;
-
-    using EPiServer.DataAnnotations;
+    using EPiServer.Shell.ViewComposition;
 
     /// <summary>
-    /// Class SettingsContentTypeAttribute. This class cannot be inherited.
-    /// Implements the <see cref="EPiServer.DataAnnotations.ContentTypeAttribute" />
+    /// Component that provides a tree based navigation for global settings.
+    /// Implements the <see cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
     /// </summary>
-    /// <seealso cref="EPiServer.DataAnnotations.ContentTypeAttribute" />
-    [AttributeUsage(validOn: AttributeTargets.Class)]
-    public sealed class SettingsContentTypeAttribute : ContentTypeAttribute
+    /// <seealso cref="EPiServer.Shell.ViewComposition.ComponentDefinitionBase" />
+    [Component]
+    public sealed class GlobalSettingsComponent : ComponentDefinitionBase
     {
         /// <summary>
-        /// Gets or sets the settings instance unique identifier.
+        /// Initializes a new instance of the <see cref="GlobalSettingsComponent"/> class.
         /// </summary>
-        /// <value>The settings instance unique identifier.</value>
-        public string SettingsInstanceGuid { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the settings.
-        /// </summary>
-        /// <value>The name of the settings.</value>
-        public string SettingsName { get; set; }
+        public GlobalSettingsComponent()
+            : base("epi-cms/component/MainNavigationComponent")
+        {
+            LanguagePath = "/episerver/cms/components/globalsettings";
+            Title = "Global settings";
+            SortOrder = 100;
+            Settings.Add(new Setting("repositoryKey", value: GlobalSettingsRepositoryDescriptor.RepositoryKey));
+        }
     }
 }
